@@ -54,7 +54,7 @@ error3 = []
 
 # s3: iterate through between this being -16 <= e <=-6
 for j in range(0,11):
-    # s1: formation of matrix A_e
+    # formation of matrix A_e
     A = np.array([[1,(1+e)],
                 [(1+e),1]])
     # store the values of Q and R
@@ -87,6 +87,10 @@ data = {
     }
 
 df = pd.DataFrame(data)
+# UNCOMMENT LINE BELOW IF TABULATE DOESN'T WORK
+#print(df)
+
+# TABULATE (requires tabulate to be installed) for data visualisation
 # simple table - some values are shortened (in the terminal)
 #print(tabulate(df,headers="keys",tablefmt="simple_grid"))
 # shows the accurate numbers (in the terminal)
