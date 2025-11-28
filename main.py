@@ -1,6 +1,47 @@
 import numpy as np
-import gram_schmidt as gs # contains qr factor. & qr eigenvals.
 import pandas as pd
+from tabulate import tabulate
+
+def gram_schmidt_qr(A):
+    """
+    Compute the QR factorisation of a square matrix using the classical
+    Gram-Schmidt process.
+
+    Parameters
+    ----------
+    A : numpy.ndarray
+        A square 2D NumPy array of shape ``(n, n)`` representing the input
+        matrix.
+
+    Returns
+    -------
+    Q : numpy.ndarray
+        Orthonormal matrix of shape ``(n, n)`` where the columns form an
+        orthonormal basis for the column space of A.
+    R : numpy.ndarray
+        Upper triangular matrix of shape ``(n, n)``.
+    """
+    n, m = A.shape
+    if n != m:
+        raise ValueError(f"the matrix A is not square, {A.shape=}")
+
+    Q = np.empty_like(A)
+    R = np.zeros_like(A)
+
+    for j in range(n):
+        # Start with the j-th column of A
+        u = A[:, j].copy()
+
+        # Orthogonalize against previous q vectors
+        for i in range(j):
+            R[i, j] = np.dot(Q[:, i], A[:, j])  # projection coefficient
+            u -= R[i, j] * Q[:, i]  # subtract the projection
+
+        # Normalize u to get q_j
+        R[j, j] = np.linalg.norm(u)
+        Q[:, j] = u / R[j, j]
+
+    return Q, R
 
 ######################################
 e = 10**-16
@@ -17,7 +58,7 @@ for j in range(0,11):
     A = np.array([[1,(1+e)],
                 [(1+e),1]])
     # store the values of Q and R
-    Q,R = gs.gram_schmidt_qr(A)
+    Q,R = gram_schmidt_qr(A)
     id_2 = np.identity(2) # identity matrix of 2x2
     Q_T = Q.T # transpose of Q
     # put e values into list and store as a string
@@ -44,5 +85,9 @@ data = {
         "error2": error2,
         "error3": error3
     }
+
 df = pd.DataFrame(data)
-print(df)
+# simple table - some values are shortened (in the terminal)
+#print(tabulate(df,headers="keys",tablefmt="simple_grid"))
+# shows the accurate numbers (in the terminal)
+print(tabulate(df,headers="keys",tablefmt="pretty"))
