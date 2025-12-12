@@ -44,8 +44,8 @@ def gram_schmidt_qr(A):
     return Q, R
 
 ######################################
-e = 10**-16
-i = -16
+e = 10**-6
+i = -6
 
 e_vals = []
 error1 = []
@@ -63,20 +63,20 @@ for j in range(0,11):
     Q_T = Q.T # transpose of Q
     # put e values into list and store as a string
     e_vals.append(f"10e**{str(i)}")
-    i += 1
+    i -= 1
     # error 1
-    e1_inp = A - Q*R
+    e1_inp = A - (Q@R)
     e1 = np.linalg.norm(e1_inp)
     error1.append(e1)
     # error 2
-    e2_inp = (Q_T*Q) - id_2
+    e2_inp = (Q_T@Q) - id_2
     e2 = np.linalg.norm(e2_inp)
     error2.append(e2)
     # error 3
-    e3_inp = R - (np.triu(A))
+    e3_inp = R - (np.triu(R))
     e3 = np.linalg.norm(e3_inp)
     error3.append(e3)
-    e = e * 10**1
+    e = e / 10
 
 # plot the data
 data = {
